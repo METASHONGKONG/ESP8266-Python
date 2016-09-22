@@ -1,6 +1,7 @@
 '''
 	NodeMcu(ESP8266) Dev
 	Designed By Tom
+	Copyright (c) 2016 METAS
 '''
 import network
 import socket

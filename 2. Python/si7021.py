@@ -3,7 +3,7 @@ from machine import Pin,I2C
 import ustruct
 import time
 import ssd1306
-class si7021:
+class SI7021:
     
     def __init__(self):
         self.pin = [16,5,4,0,2,14,12,13,15,3,1,9,10] #GPIO->PIN
