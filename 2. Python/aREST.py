@@ -2,6 +2,7 @@ from machine import ADC,PWM
 import json
 from si7021 import *
 from pca9586 import *
+from pm import *
 class aREST:
 	flag = 1
 	def handle(self,client,request_handle):
@@ -95,7 +96,7 @@ class aREST:
 			answer['message'] = 'PWM:Pin '+num+' set to '+value
 		if mode == 'temperature':
 			self.si7021 = SI7021()
-			answer['message'] = 'Temperature(¡æ):'+str(self.si7021.temp_value())
+			answer['message'] = "Temperature('C):"+str(self.si7021.temp_value())
 		if mode == 'humidity':
 			self.si7021 = SI7021()
 			answer['message'] = 'Humidity(%RH):'+str(self.si7021.humi_value())	
@@ -104,20 +105,24 @@ class aREST:
 			pin3.value(1)
 			answer['message'] = 'car forward now...'
 		if mode == 'rgb':
-				self.pca9586 = PCA9586(int(num))
-				self.pca9586.init()
-				if value == 'off':
-					self.pca9586.set_chan_off(0,1)#red led
-					self.pca9586.set_chan_off(1,1)#green led
-					self.pca9586.set_chan_off(2,1)#blue led
-					self.pca9586.set_chan_off(3,1)#white led
-					answer['message'] = 'RGB off'
-				else:
-					self.pca9586.set_chan_pwm(0,int(value))#red led
-					self.pca9586.set_chan_pwm(1,int(g))#green led
-					self.pca9586.set_chan_pwm(2,int(b))#blue led
-					self.pca9586.set_chan_pwm(3,int(w))#white led
-					answer['message'] = 'set RGB ok'
+			self.pca9586 = PCA9586(int(num))
+			self.pca9586.init()
+			if value == 'off':
+				self.pca9586.set_chan_off(0,1)#red led
+				self.pca9586.set_chan_off(1,1)#green led
+				self.pca9586.set_chan_off(2,1)#blue led
+				self.pca9586.set_chan_off(3,1)#white led
+				answer['message'] = 'RGB off'
+			else:
+				self.pca9586.set_chan_pwm(0,int(value))#red led
+				self.pca9586.set_chan_pwm(1,int(g))#green led
+				self.pca9586.set_chan_pwm(2,int(b))#blue led
+				self.pca9586.set_chan_pwm(3,int(w))#white led
+				answer['message'] = 'set RGB ok'
+		if mode == 'pm':
+			#self.pm = PM()
+			value = PM().pm_value()
+			answer['message'] = 'PM2.5 value: '+str(value)
 		#send answer	
 		c.send('HTTP/1.1 200 OK\r\nContent-type: text/html\r\nAccess-Control-Allow-Origin:* \r\n\r\n'+json.dumps(answer)+'\r\n')	
 		
