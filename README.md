@@ -1,3 +1,6 @@
+# ESP8266-Python Verion 1.2
+add PM2.5 test(pm.py)
+
 # ESP8266-Python Verion 1.1
 add pca9586.py(RGB control)
 
