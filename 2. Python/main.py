@@ -7,6 +7,8 @@ import network
 import socket
 from aREST import *
 import ssd1306
+from machine import Pin,I2C
+import machine 
 pin = [16,5,4,0,2,14,12,13,15,3,1,9,10] #GPIO->PIN
 pin5 = Pin(pin[5],Pin.OUT)# init car control:stop
 pin3 = Pin(pin[3],Pin.OUT)
@@ -38,5 +40,8 @@ s.listen(1)
 while arest.flag:
 	c,addr = s.accept() #wait client connecting...
 	request_handle = c.recv(1024)#receive request 
-	arest.handle(c,request_handle)
+	try: 
+		arest.handle(c,request_handle)
+	except (ValueError,OSError):	
+		machine.reset()
 	c.close() 	
