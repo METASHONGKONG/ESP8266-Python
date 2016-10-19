@@ -17,7 +17,7 @@ s.connect([host,port])
 s.listen(1)'''
 while True:
    # c,addr = s.accept()
-    s.send("GET /update?key=SNF4N3W61JJ6ZXG4&field3=1&field4=1 HTTP/1.1\r\n")
+    s.send("GET /update?key=SNF4N3W61JJ6ZXG4&field3=1&field4=1&field1=1&field2=2&field5=5&field6=6 HTTP/1.1\r\n")
     s.send("Host: api.thingspeak.com\r\nAccept: */*\r\nUser-Agent: Mozilla/4.0 (compatible; esp8266 Lua; Windows NT 5.1)\r\n\r\n")
     time.sleep(15)
     #s.close()
