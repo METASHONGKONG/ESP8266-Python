@@ -7,14 +7,21 @@ import network
 import socket
 from aREST import *
 import ssd1306
-from machine import Pin,I2C
+from machine import Pin,I2C,ADC
 import machine 
+
 
 pin = [16,5,4,0,2,14,12,13,15,3,1,9,10] #GPIO->PIN
 pin5 = Pin(pin[5],Pin.OUT)# init car control:stop
 pin3 = Pin(pin[3],Pin.OUT)
 pin5.value(0)
 pin3.value(0)
+pin8 = Pin(pin[8],Pin.OUT)#adc channel choose
+pin8.value(1)
+adc = ADC(0).read()
+if adc > 800:
+	import os
+	os.remove('wifi.py')
 dis_i2c = I2C(sda=Pin(pin[7]), scl=Pin(pin[6]))
 display = ssd1306.SSD1306_I2C(128,32, dis_i2c, 60)
 display.fill(0)
