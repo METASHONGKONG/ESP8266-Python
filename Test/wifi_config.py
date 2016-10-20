@@ -1,6 +1,8 @@
 import socket
 import machine
 import time
+import network
+
 def wifi_handle(list):
     list = list.decode('utf-8')
     e = list.find('HTTP')
@@ -12,11 +14,11 @@ def wifi_handle(list):
 		ssid = list[11:e]
 		ssid = ssid.replace('+',' ')
 		pwd = list[e+5:]
-		file.open('wifi.py','w+')
-		file.write('ssid="'+ssid+'"')
-		file.write('\n')
-		file.write('pwd="'+pwd+'"')
-		file.close()
+		f = open('wifi.py','w+')
+		f.write('ssid="'+ssid+'"')
+		f.write('\n')
+		f.write('pwd="'+pwd+'"')
+		f.close()
 		machine.reset()
 		# sta = network.WLAN(network.STA_IF)
 		# sta.active(True)
