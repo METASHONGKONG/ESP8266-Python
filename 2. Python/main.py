@@ -31,7 +31,18 @@ try:
 	import wifi
 
 except:
-	import wifi_config
+    display.fill(0)
+    display.text('METAS IOT',0,0,1)
+    display.text('Input Wifi',0,20,1)
+    display.show()
+    time.sleep(4)
+    display.fill(0)
+    display.text('Python-068514',0,0,1)
+    display.text('micropythoN',0,10,1)
+    display.text('192.168.4.1',0,20,1)
+    display.show()
+    import wifi_config
+    
 else:	
 	wlan = network.WLAN(network.STA_IF)#station mode
 	wlan.active(True)
