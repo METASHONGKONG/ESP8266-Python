@@ -4,16 +4,18 @@ import time
 import network
 
 def wifi_handle(list):
-    list = list.decode('utf-8')
-    e = list.find('HTTP')
-    list = list[:e-1]
-    e = list.find('&')
-    if e==-1:
+	#find wifi ssid and password
+	list = list.decode('utf-8')
+	e = list.find('HTTP')
+	list = list[:e-1]
+	e = list.find('&')
+	if e==-1:
 		pass
-    else:
+	else:
 		ssid = list[11:e]
 		ssid = ssid.replace('+',' ')
 		pwd = list[e+5:]
+		#Store information
 		f = open('wifi.py','w+')
 		f.write('ssid="'+ssid+'"')
 		f.write('\n')
@@ -36,6 +38,7 @@ port = 80
 s = socket.socket()
 s.bind([host,port])
 s.listen(1)
+#web server
 buf = '''
 	<!DOCTYPE html>
 	<html><head><meta http-equiv=Content-Type content='text/html;charset=utf-8'></head>
@@ -51,7 +54,7 @@ buf = '''
 
 while True:
 	c,addr = s.accept()
-	wifi_handle(c.recv(1024))
 	c.sendall(buf)
+	wifi_handle(c.recv(1024))
 	time.sleep(5)
 	c.close

@@ -13,9 +13,8 @@ class aREST:
 		g = ''
 		b = ''
 		w = ''
+		return_value = 0
 		answer={}
-		pin5 = Pin(pin[5],Pin.OUT)
-		pin3 = Pin(pin[3],Pin.OUT)
 		req = request_handle.decode('UTF-8','strict')
 		c = client
 		#find start
@@ -60,7 +59,39 @@ class aREST:
 							b = req[:e]
 							#find white led
 							w = req[e+1:] 
-					
+		# Debug output, pattern: http://IP/mode/pin/command/g/b/w	
+		print('-----------------------')
+		print('Mode: '+mode)
+		print('Pin: '+num)
+		print('Command: '+value)
+		print('g: '+g)
+		print('b: '+b)
+		print('w: '+w)
+		# new command
+		if mode == 'input':
+			pin_in = Pin(pin[int(num)],Pin.IN)
+			read_value = pin_in.value()
+			answer['message'] = 'Pin '+num+' read value '+str(read_value)
+		if mode == 'servo':
+			pin_pwm = PWM(Pin(pin[int(num)]),freq=100,duty=(int(int(value)*1023/120)))#pwm init
+			answer['message'] = 'PWM:Pin '+num+' set to '+str(int(int(value)*1023/120))
+		if mode == 'motor':
+			if num == '1' :
+				pin_motor_5 = PWM(Pin(pin[5]),freq=100,duty=int(g))
+				pin_motor_0 = Pin(pin[0],Pin.OUT)
+				if value == 'cw':
+					pin_motor_0.value(1)
+				elif value == 'acw':
+					pin_motor_0.value(0)
+			elif num == '2':
+				pin_motor_3 = PWM(Pin(pin[3]),freq=100,duty=int(g))
+				pin_motor_4 = Pin(pin[4],Pin.OUT)
+				if value == 'cw':
+					pin_motor_4.value(1)
+				elif value == 'acw':
+					pin_motor_4.value(0)
+			answer['message'] = 'motor '+num+' '+value
+		# old command
 		if mode == 'exit':
 			self.flag = 0
 			answer['message'] = 'A socket to stop working,start again please restart'
@@ -69,6 +100,8 @@ class aREST:
 				answer['message'] = 'Pin '+num+' set to output'
 			if value == 'i':
 				answer['message'] = 'Pin '+num+' set to input'
+			if value == 'p':
+				answer['message'] = 'Pin '+num+' set to pwm'
 		if mode == 'digital':
 			if value == '0':
 				pin_out = Pin(pin[int(num)],Pin.OUT)
@@ -90,20 +123,19 @@ class aREST:
 				pin_out = Pin(pin[8],Pin.OUT)
 				pin_out.value(0)	
 			adc_value = ADC(0).read()
-			answer['message'] = 'A'+num+' value:'+str(adc_value)
-		if mode == 'pwm':
+			#answer['message'] = 'A'+num+' value:'+str(adc_value)
+			return_value = adc_value
+		if mode == 'pwm' or mode =='output':
 			pin_pwm = PWM(Pin(pin[int(num)]),freq=100,duty=int(value))#pwm init
 			answer['message'] = 'PWM:Pin '+num+' set to '+value
 		if mode == 'temperature':
 			self.si7021 = SI7021()
-			answer['message'] = "Temperature('C):"+str(self.si7021.temp_value())
+			#answer['message'] = "Temperature('C):"+str(self.si7021.temp_value())
+			return_value = self.si7021.temp_value()
 		if mode == 'humidity':
 			self.si7021 = SI7021()
-			answer['message'] = 'Humidity(%RH):'+str(self.si7021.humi_value())	
-		if mode == 'forward':
-			pin5.value(1)
-			pin3.value(1)
-			answer['message'] = 'car forward now...'
+			#answer['message'] = 'Humidity(%RH):'+str(self.si7021.humi_value())	
+			return_value = self.si7021.humi_value()
 		if mode == 'rgb':
 			self.pca9586 = PCA9586(int(num))
 			self.pca9586.init()
@@ -122,8 +154,12 @@ class aREST:
 		if mode == 'pm':
 			#self.pm = PM()
 			value = PM().pm_value()
-			answer['message'] = 'PM2.5 value: '+str(value)
+			#answer['message'] = 'PM2.5 value: '+str(value)
+			return_value = value
 		#send answer	
-		c.send('HTTP/1.1 200 OK\r\nContent-type: text/html\r\nAccess-Control-Allow-Origin:* \r\n\r\n'+json.dumps(answer)+'\r\n')	
+		if mode == 'pm' or mode == 'temperature' or mode == 'humidity' or mode == 'analog':
+			c.send('HTTP/1.1 200 OK\r\nContent-type: text/html\r\nAccess-Control-Allow-Origin:* \r\n\r\n'+str(return_value)+'\r\n')	
+		else:
+			c.send('HTTP/1.1 200 OK\r\nContent-type: text/html\r\nAccess-Control-Allow-Origin:* \r\n\r\n'+json.dumps(answer)+'\r\n')	
 		
 		
