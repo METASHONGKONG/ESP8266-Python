@@ -31,16 +31,6 @@ try:
 	import wifi
 
 except:
-    display.fill(0)
-    display.text('METAS IOT',0,0,1)
-    display.text('Input Wifi',0,20,1)
-    display.show()
-    time.sleep(4)
-    display.fill(0)
-    display.text('Python-068514',0,0,1)
-    display.text('micropythoN',0,10,1)
-    display.text('192.168.4.1',0,20,1)
-    display.show()
     import wifi_config
     
 else:	
@@ -63,6 +53,8 @@ else:
 	s.bind([host[0],port])
 	s.listen(1)
 	while arest.flag:
+                print('lisetning')
+                time.sleep(0.2)
 		c,addr = s.accept() #wait client connecting...
 		request_handle = c.recv(1024)#receive request 
 		try: 
