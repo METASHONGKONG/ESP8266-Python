@@ -9,7 +9,7 @@ from aREST import *
 import ssd1306
 from machine import Pin,I2C,ADC
 import machine 
-
+import ustruct
 
 pin = [16,5,4,0,2,14,12,13,15,3,1,9,10] #GPIO->PIN
 pin5 = Pin(pin[5],Pin.OUT)# init car control:stop
@@ -31,6 +31,12 @@ try:
 	import wifi
 
 except:
+    b = ustruct.unpack('BBBB',machine.unique_id())
+    display.fill(0)
+    display.text('Metas_'+str(b[0]+b[1]+b[2]+b[3]),0,0,1)
+    display.text('12345678',0,10,1)
+    display.text('192.168.4.1',0,20,1)
+    display.show()
     import wifi_config
     
 else:	

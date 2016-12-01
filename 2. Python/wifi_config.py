@@ -2,6 +2,7 @@ import socket
 import machine
 import time
 import network
+import ustruct
 
 def wifi_handle(list):
 	#find wifi ssid and password
@@ -22,17 +23,11 @@ def wifi_handle(list):
 		f.write('pwd="'+pwd+'"')
 		f.close()
 		machine.reset()
-		# sta = network.WLAN(network.STA_IF)
-		# sta.active(True)
-		# sta.connect(ssid,pwd)
-		# print(ssid+pwd)
-		# while not sta.isconnected():
-			# print('please wait...')
-			# time.sleep(1)
-		# print(sta.ifconfig())
-   
+        
+b = ustruct.unpack('BBBB',machine.unique_id())
 ap = network.WLAN(network.AP_IF)
 ap.active(True)
+ap.config(essid='Metas_'+str(b[0]+b[1]+b[2]+b[3]),password='12345678')
 host = ap.ifconfig()[0]
 port = 80
 s = socket.socket()
