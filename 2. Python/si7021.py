@@ -2,7 +2,6 @@
 from machine import Pin,I2C
 import ustruct
 import time
-import ssd1306
 class SI7021:
     
     def __init__(self):

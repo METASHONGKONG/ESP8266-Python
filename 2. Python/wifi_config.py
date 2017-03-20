@@ -1,16 +1,17 @@
 import socket
 import machine
-import time
-import network
 import ustruct
-
+import network
+'''import ssd1306
+import time
+from machine import I2C,Pin'''
 def wifi_handle(list):
 	#find wifi ssid and password
 	list = list.decode('utf-8')
 	e = list.find('HTTP')
 	list = list[:e-1]
 	e = list.find('&')
-	if e==-1:
+	if e == -1:
 		pass
 	else:
 		ssid = list[11:e]
@@ -23,11 +24,10 @@ def wifi_handle(list):
 		f.write('pwd="'+pwd+'"')
 		f.close()
 		machine.reset()
-        
-b = ustruct.unpack('BBBB',machine.unique_id())
+
+ 
 ap = network.WLAN(network.AP_IF)
 ap.active(True)
-ap.config(essid='Metas_'+str(b[0]+b[1]+b[2]+b[3]),password='12345678')
 host = ap.ifconfig()[0]
 port = 80
 s = socket.socket()
@@ -51,5 +51,5 @@ while True:
 	c,addr = s.accept()
 	c.sendall(buf)
 	wifi_handle(c.recv(1024))
-	time.sleep(5)
+	#time.sleep(5)
 	c.close

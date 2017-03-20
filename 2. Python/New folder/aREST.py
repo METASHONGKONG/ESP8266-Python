@@ -1,8 +1,8 @@
 from machine import ADC,PWM
 import json
-from pm import *
 from si7021 import *
 from pca9586 import *
+from pm import *
 class aREST:
 	flag = 1
 	def handle(self,client,request_handle):
@@ -95,6 +95,13 @@ class aREST:
 		if mode == 'exit':
 			self.flag = 0
 			answer['message'] = 'A socket to stop working,start again please restart'
+		if mode == 'mode':
+			if value == 'o':
+				answer['message'] = 'Pin '+num+' set to output'
+			if value == 'i':
+				answer['message'] = 'Pin '+num+' set to input'
+			if value == 'p':
+				answer['message'] = 'Pin '+num+' set to pwm'
 		if mode == 'digital':
 			if value == '0':
 				pin_out = Pin(pin[int(num)],Pin.OUT)
@@ -125,25 +132,7 @@ class aREST:
 			self.si7021 = SI7021()
 			#answer['message'] = "Temperature('C):"+str(self.si7021.temp_value())
 			return_value = self.si7021.temp_value()
-		if mode == 'humidity':
-			self.si7021 = SI7021()
-			#answer['message'] = 'Humidity(%RH):'+str(self.si7021.humi_value())	
-			return_value = self.si7021.humi_value()
-		if mode == 'rgb':
-			self.pca9586 = PCA9586(int(num))
-			self.pca9586.init()
-			if value == 'off':
-				self.pca9586.set_chan_off(0,1)#red led
-				self.pca9586.set_chan_off(1,1)#green led
-				self.pca9586.set_chan_off(2,1)#blue led
-				self.pca9586.set_chan_off(3,1)#white led
-				answer['message'] = 'RGB off'
-			else:
-				self.pca9586.set_chan_pwm(0,int(value))#red led
-				self.pca9586.set_chan_pwm(1,int(g))#green led
-				self.pca9586.set_chan_pwm(2,int(b))#blue led
-				self.pca9586.set_chan_pwm(3,int(w))#white led
-				answer['message'] = 'set RGB ok'
+
 		if mode == 'pm':
 			#self.pm = PM()
 			value = PM().pm_value()
