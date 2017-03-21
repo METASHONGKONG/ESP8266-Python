@@ -10,5 +10,5 @@ def degree(duty):
 	
 #Program
 D = [16,5,4,0,2,14,12,13,15,3,1,9,10] #Initialization(GPIO->METAS PIN)
-D1 = PWM(Pin(D[4]),freq=50,duty=0) #Set D1 as PWM
-D1.duty(degree(180))  #Set servo to 180 degree
+D4 = PWM(Pin(D[4]),freq=50,duty=0) #Set D4 as PWM
+D4.duty(degree(180))  #Set servo to 180 degree
