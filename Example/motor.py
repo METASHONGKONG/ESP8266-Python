@@ -16,8 +16,8 @@ M1_CW.duty(500)
 M1_ACW.duty(0)
 
 #Turn motor 1 anticlockwise in 1023
-M1_CW.duty(1023)  
-M1_ACW.duty(0)
+M1_CW.duty(0)  
+M1_ACW.duty(1023)
 
 #Stop motor 1
 M1_CW.duty(0)  
